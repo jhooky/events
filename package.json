@@ -1,7 +1,7 @@
 {
   "name": "@jhooky/events",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple events mixin object",
   "main": "events.js",
   "scripts": {

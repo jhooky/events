@@ -1,5 +1,6 @@
 /**
- * events.js --- A simple events mixin object.
+ * @jhooky/events --- A simple events mixin object.
+ * events.js
  */
 
 var tools = require('toolchest')
@@ -20,6 +21,26 @@ var getChannel = function (emitter, name, create) {
 var removeChannel = function (emitter, name) {
   var channels = emitter._events || (emitter._events = {})
   delete channels[name]
+}
+
+// This is probably overkill... but what the hell, why not?
+var optimizeCallback = function (callback, context, args) {
+  var arg1, arg2, arg3
+  arg1 = args[0]
+  arg2 = args[1]
+  arg3 = args[2]
+  switch (args.length) {
+    case 0:
+      callback.call(context); return
+    case 1:
+      callback.call(context, arg1); return
+    case 2:
+      callback.call(arg1, arg2); return
+    case 3:
+      callback.call(context, arg1, arg2, arg3); return
+    default:
+      callback.apply(context, args); return
+  }
 }
 
 var Event = function (context, callback) {
@@ -63,10 +84,11 @@ exports.off = function (name, callback) {
  */
 exports.once = function (name, callback, context) {
   if (isString(name) && isFunction(callback)) {
-    this.on(name, callback, context)
-    getChannel(this, name).cache.push(new Event(this, function () {
-      this.off(name, callback)
-    }))
+    var modified = function () {
+      optimizeCallback(callback, context, arguments)
+      this.off(name, modified)
+    }
+    this.on(name, modified, context)
   }
   return this
 }
@@ -91,7 +113,11 @@ exports.listen = function (object, name, callback, context) {
 
 exports.listenOnce = function (object, name, callback, context) {
   if (isString(name) && isFunction(callback) && isFunction(object.once)) {
-    object.once(name, callback, context || this)
+    var modified = function () {
+      optimizeCallback(callback, context, arguments)
+      this.stopListening(object, name, modified)
+    }
+    this.listen(object, name, modified, context || this)
   }
   return this
 }
