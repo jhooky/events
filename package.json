@@ -1,0 +1,26 @@
+{
+  "name": "@jhooky/events",
+  "license": "MIT",
+  "version": "1.0.0",
+  "description": "A simple events mixin object",
+  "main": "events.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jhooky/events.git"
+  },
+  "author": "John Hooks <john@hookscrane.com>",
+  "bugs": {
+    "url": "https://github.com/jhooky/events/issues"
+  },
+  "homepage": "https://github.com/jhooky/events#readme",
+  "dependencies": {
+    "toolchest": "~0.0.4"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "mocha": "^2.3.4"
+  }
+}
